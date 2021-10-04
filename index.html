@@ -1,1 +1,281 @@
+<!doctype html>
+<html>
 
+<head>
+    <title>Bloom Filter</title>
+    <meta name="description" content="Our first page">
+    <meta name="keywords" content="html tutorial template">
+    <link rel="icon" href="data:;base64,=">
+
+    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+<body onload="init();">
+    <div class="side"></div>
+    <div class="main">
+        <p>Bloom Filter</p>
+        <div class="formNewFilter">
+            <label class="label">m:</label>
+            <input type="number" id="mValue" name="mValue" value="10"> <br><br>
+
+            <label class="label">k:</label>
+            <input type="number" id="kValue" name="kValue" value="2"> <br><br>
+
+            <button type="button" onclick="submitNewFilter()">Go!</button>
+        </div>
+        <div id="bitArray" class="bitArray center"></div>
+        <div class="formNewValue">
+            <label>Add value:</label>
+            <input type="text" id="newValue" name="newValue" value="">
+            <button type="button" onclick="submitNewValue()">Go!</button>
+        </div>
+        <div id="hashInfoNew" class="leftOrient">
+            <label class="label labelBig">MD5:</label><label id="MD5HashValueNew"></label> <br><br>
+            <label class="label labelBig">SHA1:</label><label id="SHA1HashValueNew"></label> <br><br>
+            <div id="additionalHashInfoNew"></div>
+        </div>
+        <label class="label labelBig">n:</label><label id="nValue">[]</label> <br><br>
+        <div class="formTestValue">
+            <label>Test for membership:</label>
+            <input type="text" id="testValue" name="testValue" value="">
+            <button type="button" onclick="submitTestValue()">Go!</button>
+        </div>
+        <div id="hashInfoTest" class="leftOrient">
+            <label class="label labelBig">MD5:</label><label id="MD5HashValueTest"></label> <br><br>
+            <label class="label labelBig">SHA1:</label><label id="SHA1HashValueTest"></label> <br><br>
+            <div id="additionalHashInfoTest"></div>
+        </div>
+        <label class="label labelBig">Result:</label><label id="isMember"></label> <br><br>
+
+
+        <label class=" ">False positive rate
+            <math>
+                <mrow>
+                    <mi>fp</mi>
+                    <mo>=</mo>
+                </mrow>
+                <mrow>
+                    <msup>
+                        <mfenced>
+                            <mrow>
+                                <mi>1</mi>
+                                <mo>-</mo>
+                                <msup>
+                                    <mi>e</mi>
+                                    <mrow>
+                                        <mfrac>
+                                            <mrow>
+                                                <mo>-</mo>
+                                                <mi>k</mi>
+                                                <mo></mo>
+                                                <mi>n</mi>
+                                            </mrow>
+                                            <mi>m</mi>
+                                        </mfrac>
+                                    </mrow>
+                                </msup>
+                            </mrow>
+                        </mfenced>
+                        <mi>k</mi>
+                    </msup>
+
+                </mrow>
+            </math>
+            =</label>
+        <label id="fpValue">0</label> <br><br>
+
+    </div>
+    <div class="side"></div>
+
+    <script>
+        //   var mInput = document.getElementById("mValue");
+        //   var kInput = document.getElementById("kValue");
+        //   var nLabel = document.getElementById("nValue");
+        //   var fpLabel = document.getElementById("fpValue");
+        //   var m = parseInt(mInput.value);
+        //   var k = parseInt(kInput.value);
+
+
+
+        let set = [];
+        let bits = new Array(10).fill(0);
+
+        function init() {
+            let m = parseInt(document.getElementById("mValue").value);
+            let k = parseInt(document.getElementById("kValue").value);
+
+            createBitArray(m);
+            setAdditionalHashInfo(k - 2);
+        }
+
+        function createBitArray(size) {
+            var parent = document.getElementById('bitArray');
+            parent.replaceChildren();
+            for (let i = 0; i < size; i++) {
+                var element = document.createElement("div");
+                element.className = "bit";
+                element.id = "bit" + i;
+                if (size > 30) element.setAttribute("style", "width:" + 750 / size + "px");
+                element.appendChild(document.createTextNode('0'));
+                element.addEventListener('transitionend', function () {
+                    setActive(this);
+                    stopHighlight(this);
+                });
+                document.getElementById('bitArray').appendChild(element);
+            }
+        }
+
+        function setAdditionalHashInfo(numberAdditionalHashes) {
+            let info = ["New", "Test"];
+            info.forEach((e) => {
+                var parent = document.getElementById("additionalHashInfo" + e);
+                parent.replaceChildren();
+                for (let i = 0; i < numberAdditionalHashes; i++) {
+                    var element = document.createElement("label");
+                    element.className = "label labelBig";
+                    element.innerHTML = "Hash " + (i + 3) + ":";
+                    parent.appendChild(element);
+                    element = document.createElement("label");
+                    element.id = "addHash" + e + i;
+                    parent.appendChild(element);
+                    parent.appendChild(document.createElement("br"));
+                    parent.appendChild(document.createElement("br"));
+                }
+            });
+        }
+
+        function submitNewFilter() {
+            init();
+            reset();
+        }
+
+        function reset() {
+            set = [];
+            updateSetVisualization();
+            let info = ["New", "Test"];
+            info.forEach((e) => {
+                document.getElementById("MD5HashValue" + e).innerHTML = "";
+                document.getElementById("SHA1HashValue" + e).innerHTML = "";
+            });
+            document.getElementById("newValue").value = "";
+            document.getElementById("testValue").value = "";
+            document.getElementById("isMember").value = "";
+            document.getElementById("fpValue").innerHTML = 0;
+        }
+
+        function stopHighlight(element) {
+            if (element.classList.contains('active')) {
+                element.classList.toggle('active');
+            }
+        }
+
+        function submitTestValue() {
+            let m = parseInt(document.getElementById("mValue").value);
+            let k = parseInt(document.getElementById("kValue").value);
+
+            hashes = [];
+            var testValue = document.getElementById('testValue').value;
+            hashes = getHashValues(testValue, m, k);
+
+            updateHashInfo("Test", hashes, k);
+
+            let isMember = testBits(hashes);
+            let isMemberMessage = isMember ? "Possibly in set" : "definitely not in set";
+            document.getElementById("isMember").innerHTML = isMemberMessage;
+        }
+
+        function testBits(hashes) {
+            let allOne = true;
+            hashes.forEach(e => {
+                if (!allOne) return allOne;
+                if (document.getElementById("bit" + e).innerHTML == "1")
+                    allOne = true;
+                else
+                    allOne = false;
+                console.log(e + " " + allOne);
+            });
+            return allOne;
+        }
+
+
+        function submitNewValue() {
+            let m = parseInt(document.getElementById("mValue").value);
+            let k = parseInt(document.getElementById("kValue").value);
+
+            hashes = [];
+            var newValue = document.getElementById('newValue').value;
+            hashes = getHashValues(newValue, m, k);
+
+            set.push(newValue);
+            document.getElementById("fpValue").innerHTML = Math.pow((1 - Math.exp(- k * set.length / m)), k);
+
+            updateSetVisualization();
+            updateHashInfo("New", hashes, k);
+            highlightBits(hashes);
+        }
+
+        function getHashValues(element, m, k) {
+
+
+            var hashes = [];
+            var md5Hash = CryptoJS.MD5(element).toString();
+            md5Hash = BigInt('0x' + md5Hash);
+            md5Hash = md5Hash % BigInt(m);
+            md5Hash = parseInt(md5Hash);
+            hashes.push(md5Hash);
+
+            var sha1Hash = CryptoJS.SHA1(element).toString();
+            sha1Hash = BigInt('0x' + sha1Hash);
+            sha1Hash = sha1Hash % BigInt(m);
+            sha1Hash = parseInt(sha1Hash);
+            hashes.push(sha1Hash);
+            for (let i = 1; i < k - 1; i++) {
+                var newHash = (parseInt(md5Hash) + i * parseInt(sha1Hash)) % m;
+                hashes.push(newHash);
+            }
+            return hashes;
+        }
+
+        function updateSetVisualization() {
+            var setAsString = "[";
+            if (set.length > 0) {
+                set.forEach(function (e) {
+                    setAsString += e.toString();
+                    setAsString += ", ";
+                });
+                setAsString = setAsString.substring(0, setAsString.length - 2);
+            }
+            setAsString += "]";
+            document.getElementById("nValue").innerHTML = setAsString;
+        }
+
+        function updateHashInfo(info, hashes, k) {
+            for (let i = 2; i < k; i++) {
+                document.getElementById("addHash" + info + (i - 2)).innerHTML = hashes[i];
+            }
+            document.getElementById("MD5HashValue" + info).innerHTML = hashes[0];
+            document.getElementById("SHA1HashValue" + info).innerHTML = hashes[1];
+        }
+
+        function highlightBits(hashes) {
+            var bit;
+            for (i in hashes) {
+                bit = document.getElementById("bit" + hashes[i]);
+                bit.classList.add('active');
+            }
+        }
+
+        function setActive(element) {
+            element.innerHTML = "1";
+        }
+
+    </script>
+
+</body>
+
+</html>

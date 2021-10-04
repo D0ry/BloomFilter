@@ -1,0 +1,89 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0px;
+}
+
+.side {
+  background-color: #ffffff;
+  padding: 20px;
+  float: left;
+  width: 20%;
+}
+
+.main {
+  background-color: #c5c5c5;
+  padding: 20px;
+  float: left;
+  margin: 0px;
+  width: 60%; /* The width is 60%, by default */
+}
+
+.bit {
+  width: 25px;
+  height: 25px;
+  margin: 1px;
+  text-align: center;
+  border: 1px solid gray;
+  background-color: white;
+  display: inline-block;
+  line-height: 25px;
+  transition: background-color 1.5s ease-out;
+}
+
+.bit.active {
+    background-color: yellow;
+  }
+
+.slim {
+    width: 15px;
+}
+
+.center {
+  text-align: center;
+}
+
+.leftOrient {
+    margin: 20px;
+}
+
+.label {
+  display: inline-block;
+  width: 20px;
+}
+
+.labelBig {
+    width: 60px;
+}
+
+#bitArray {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+/* Use a media query to add a break point at 800px: */
+@media screen and (max-width: 800px) {
+  .main {
+    width: 100%; /* The width is 100%, when the viewport is 800px or smaller */
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .side {
+    display: none;
+  }
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
