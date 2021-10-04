@@ -3,111 +3,187 @@
 
 <head>
     <title>Bloom Filter</title>
-    <meta name="description" content="Our first page">
-    <meta name="keywords" content="html tutorial template">
+    <meta name="description" content="Bloom Filter Visualization">
     <link rel="icon" href="data:;base64,=">
 
     <link rel="stylesheet" href="style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 
 <body onload="init();">
     <div class="side"></div>
     <div class="main">
-        <p>Bloom Filter</p>
-        <div class="formNewFilter">
-            <label class="label">m:</label>
-            <input type="number" id="mValue" name="mValue" value="10"> <br><br>
-
-            <label class="label">k:</label>
-            <input type="number" id="kValue" name="kValue" value="2"> <br><br>
-
-            <button type="button" onclick="submitNewFilter()">Go!</button>
-        </div>
-        <div id="bitArray" class="bitArray center"></div>
-        <div class="formNewValue">
-            <label>Add value:</label>
-            <input type="text" id="newValue" name="newValue" value="">
-            <button type="button" onclick="submitNewValue()">Go!</button>
-        </div>
-        <div id="hashInfoNew" class="leftOrient">
-            <label class="label labelBig">MD5:</label><label id="MD5HashValueNew"></label> <br><br>
-            <label class="label labelBig">SHA1:</label><label id="SHA1HashValueNew"></label> <br><br>
-            <div id="additionalHashInfoNew"></div>
-        </div>
-        <label class="label labelBig">n:</label><label id="nValue">[]</label> <br><br>
-        <div class="formTestValue">
-            <label>Test for membership:</label>
-            <input type="text" id="testValue" name="testValue" value="">
-            <button type="button" onclick="submitTestValue()">Go!</button>
-        </div>
-        <div id="hashInfoTest" class="leftOrient">
-            <label class="label labelBig">MD5:</label><label id="MD5HashValueTest"></label> <br><br>
-            <label class="label labelBig">SHA1:</label><label id="SHA1HashValueTest"></label> <br><br>
-            <div id="additionalHashInfoTest"></div>
-        </div>
-        <label class="label labelBig">Result:</label><label id="isMember"></label> <br><br>
-
-
-        <label class=" ">False positive rate
+        <p class="caption">Bloom Filter Visualization</p>
+        <p>Create a new Bloom Filter with <em>m</em> bits and <em>k</em> different hash functions.</p>
+        <p>Used are the MD5 and SHA-1 Hash Functions. Further hashes are calculated using the equation  <br>
             <math>
                 <mrow>
-                    <mi>fp</mi>
-                    <mo>=</mo>
+                    <msub><mi>H</mi><mn>i</mn></msub>
+                    <mo>(</mo>
+                    <mi>x</mi>
+                    <mo>)</mo>
+                    <mo> = </mo>
                 </mrow>
                 <mrow>
-                    <msup>
-                        <mfenced>
-                            <mrow>
-                                <mi>1</mi>
-                                <mo>-</mo>
-                                <msup>
-                                    <mi>e</mi>
-                                    <mrow>
-                                        <mfrac>
-                                            <mrow>
-                                                <mo>-</mo>
-                                                <mi>k</mi>
-                                                <mo></mo>
-                                                <mi>n</mi>
-                                            </mrow>
-                                            <mi>m</mi>
-                                        </mfrac>
-                                    </mrow>
-                                </msup>
-                            </mrow>
-                        </mfenced>
-                        <mi>k</mi>
-                    </msup>
-
+                    <msub><mi>H</mi><mn>MD5</mn></msub>
+                    <mo>(</mo>
+                    <mi>x</mi>
+                    <mo>)</mo>
+                    <mo>+</mo>
+                    <mi>i</mi>
+                    <mo>*</mo>
+                    <msub><mi>H</mi><mn>SHA-1</mn></msub>
+                    <mo>(</mo>
+                    <mi>x</mi>
+                    <mo>)</mo>
                 </mrow>
-            </math>
-            =</label>
-        <label id="fpValue">0</label> <br><br>
+            </math> .
+        </p>
+        <div class="form formNewFilter">
+            <div class="formDecoration">New Bloom Filter</div>
+            <label class="formLabel">m</label>
+            <input class="input" type="number" id="mValue" name="mValue" value="10">
+            <br>
+            <label class="formLabel">k</label>
+            <input class="input" type="number" id="kValue" name="kValue" value="2">
+            <br>
+            <button class="button" type="button" onclick="submitNewFilter()">Create a new Bloom Filter</button>
+            <label class="ErrorMssg" id="ErrorNewFilter"></label>
+        </div>
+
+        <div id="bitArray" class="form bitArray center"></div>
+
+        <div class="form formNewValue">
+            <div class="formDecoration">Add new Element</div>
+            <label class="formLabel">New Element</label>
+            <input class="input" type="text" id="newValue" name="newValue" onfocus="this.value=''" value=""
+                placeholder="enter int/String here">
+            <br>
+            <button class="button" type="button" onclick="submitNewValue()">Add a new Element</button>
+            <label class="ErrorMssg" id="ErrorNewValue"></label>
+            <div id="hashInfoNew" class="leftOrient">
+                <label class="label labelBig">MD5:</label><label id="MD5HashValueNew"></label> <br><br>
+                <label class="label labelBig">SHA1:</label><label id="SHA1HashValueNew"></label> <br><br>
+                <div id="additionalHashInfoNew"></div>
+                <label>
+                    <math>
+                        <mrow>
+                            <mi>n</mi>
+                            <mo>=</mo>
+                        </mrow>
+                    </math> </label><label id="nValue"> </label>
+
+                <br><br>
+
+                <label>
+                    <math>
+                        <mrow>
+                            <mi>false positive rate</mi>
+                            <mo>=</mo>
+                        </mrow>
+                        <mrow>
+                            <msup>
+                                <mrow>
+                                    <mo>(</mo>
+                                    <mrow>
+                                        <mi>1</mi>
+                                        <mo>-</mo>
+                                        <msup>
+                                            <mi>e</mi>
+                                            <mrow>
+                                                <mfrac>
+                                                    <mrow>
+                                                        <mo>-</mo>
+                                                        <mi>k</mi>
+                                                        <mo></mo>
+                                                        <mi>n</mi>
+                                                    </mrow>
+                                                    <mi>m</mi>
+                                                </mfrac>
+                                            </mrow>
+                                        </msup>
+                                    </mrow>
+                                    <mo>)</mo>
+                                </mrow>
+                                <mi>k</mi>
+                            </msup>
+                        </mrow>
+                        <mrow>
+                            <mo>=</mo>
+                        </mrow>
+                    </math>
+                </label>
+                <label id="fpValue"><math>
+                        <mi>0</mi>
+                    </math></label> <br><br>
+
+                    <label>
+                        <math>
+                            <mrow>
+                                <mi>optimal k</mi>
+                                <mo>=</mo>
+                            </mrow>
+                            <mrow>
+                                <mfrac>
+                                    <mi>m</mi>
+                                    <mi>n</mi>
+                                </mfrac>
+                                <mo>ln</mo>
+                                <mi>2</mi>
+                            </mrow>
+                            <mrow>
+                                <mo>=</mo>
+                            </mrow>
+                        </math>
+                    </label>
+                    <label id="optimalkValue"></label>
+
+                <br><br>
+            </div>
+        </div>
+
+        <div class=" form formTestValue">
+            <div class="formDecoration">Test for Membership</div>
+            <label class="formLabel">Test Element</label>
+            <input class="input" type="text" id="testValue" name="testValue" onfocus="this.value=''" value=""
+                placeholder="enter int/String here">
+            <br>
+            <button class="button" type="button" onclick="submitTestValue()">Go!</button>
+            <div id="hashInfoTest" class="leftOrient">
+                <label class="label labelBig">MD5:</label><label id="MD5HashValueTest"></label> <br><br>
+                <label class="label labelBig">SHA1:</label><label id="SHA1HashValueTest"></label> <br><br>
+                <div id="additionalHashInfoTest"></div>
+                <label class="label labelBig">Result:</label><label id="isMember"></label>
+            </div>
+
+        </div>
 
     </div>
     <div class="side"></div>
 
     <script>
-        //   var mInput = document.getElementById("mValue");
-        //   var kInput = document.getElementById("kValue");
-        //   var nLabel = document.getElementById("nValue");
-        //   var fpLabel = document.getElementById("fpValue");
-        //   var m = parseInt(mInput.value);
-        //   var k = parseInt(kInput.value);
-
-
-
         let set = [];
-        let bits = new Array(10).fill(0);
 
         function init() {
             let m = parseInt(document.getElementById("mValue").value);
             let k = parseInt(document.getElementById("kValue").value);
+            let error = document.getElementById("ErrorNewFilter");
+
+            if (m < 10) {
+                error.innerHTML = "m should not be smaller than 10."
+                return;
+            }             
+            if (k < 2) {
+                error.innerHTML = "k should not be smaller than k."
+                return;
+            }             
+            if (k > m/2 ) {
+                error.innerHTML = "k should not be bigger than <math><mfrac><mi>m</mi><mi>2</mi></mfrac></math>.";
+                return;
+            } 
+            error.innerHTML = "";
 
             createBitArray(m);
             setAdditionalHashInfo(k - 2);
@@ -165,7 +241,8 @@
             document.getElementById("newValue").value = "";
             document.getElementById("testValue").value = "";
             document.getElementById("isMember").value = "";
-            document.getElementById("fpValue").innerHTML = 0;
+            document.getElementById("fpValue").innerHTML = "<math><mi>0</mi></math>";
+            document.getElementById("optimalkValue").innerHTML = "";
         }
 
         function stopHighlight(element) {
@@ -185,7 +262,7 @@
             updateHashInfo("Test", hashes, k);
 
             let isMember = testBits(hashes);
-            let isMemberMessage = isMember ? "Possibly in set" : "definitely not in set";
+            let isMemberMessage = isMember ? "Element may be in set." : "Element is not in set.";
             document.getElementById("isMember").innerHTML = isMemberMessage;
         }
 
@@ -202,17 +279,28 @@
             return allOne;
         }
 
-
         function submitNewValue() {
             let m = parseInt(document.getElementById("mValue").value);
             let k = parseInt(document.getElementById("kValue").value);
+            let newValueInput = document.getElementById('newValue');
+            var newValue = newValueInput.value;
+            let error = document.getElementById("ErrorNewValue");
+
+            if (set.includes(newValue)) {
+                error.innerHTML = "New Element already contained in set.";
+                return;
+            } 
+            error.innerHTML = "";
 
             hashes = [];
-            var newValue = document.getElementById('newValue').value;
             hashes = getHashValues(newValue, m, k);
 
             set.push(newValue);
-            document.getElementById("fpValue").innerHTML = Math.pow((1 - Math.exp(- k * set.length / m)), k);
+            let fpValue = (Math.pow((1 - Math.exp(- k * set.length / m)), k)).toFixed(3);
+            document.getElementById("fpValue").innerHTML = '<math><mi>' + fpValue + '</mi></math>';
+
+            let optkValue = Math.round(m / set.length * Math.log(2));
+            document.getElementById("optimalkValue").innerHTML = '<math><mi>' + optkValue + '</mi></math>';
 
             updateSetVisualization();
             updateHashInfo("New", hashes, k);
@@ -220,8 +308,6 @@
         }
 
         function getHashValues(element, m, k) {
-
-
             var hashes = [];
             var md5Hash = CryptoJS.MD5(element).toString();
             md5Hash = BigInt('0x' + md5Hash);
@@ -242,16 +328,15 @@
         }
 
         function updateSetVisualization() {
-            var setAsString = "[";
+            let mathString = '<math><mo>[</mo>';
             if (set.length > 0) {
                 set.forEach(function (e) {
-                    setAsString += e.toString();
-                    setAsString += ", ";
+                    mathString += '<mi>' + e.toString() + '</mi><mo>,</mo>';
                 });
-                setAsString = setAsString.substring(0, setAsString.length - 2);
+                mathString = mathString.substring(0, mathString.length - 10);
             }
-            setAsString += "]";
-            document.getElementById("nValue").innerHTML = setAsString;
+            mathString += '<mo>]</mo></math>';
+            document.getElementById("nValue").innerHTML = mathString;
         }
 
         function updateHashInfo(info, hashes, k) {

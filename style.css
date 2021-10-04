@@ -6,6 +6,61 @@ body {
   margin: 0px;
 }
 
+.button {
+  background-color: rgb(214, 231, 231);
+  width: 50%;
+  padding: 8px;
+  border: none;
+  font-size: medium;
+  cursor:pointer;
+}
+
+.ErrorMssg {
+  padding: 8px;
+  font-size: small;
+  color: darkred;
+}
+
+.form {
+  background-color: #aaaaaa;
+  padding: 10px;
+  margin: 15px 0px;
+  border-radius: 7px;
+}
+
+.formDecoration {
+  background-color: cadetblue;
+  width: 200px;
+  margin: 5px;
+  padding: 10px;
+  margin-left: -20px;
+}
+
+.input {
+  display: block;
+  font-size: small;
+  background-color: transparent;
+  border: none;
+  width: 50%;
+  border-bottom: 1px solid #000000;
+}
+
+.inputForm {
+  orientation: left;
+  width: 50%;
+  border-bottom: 1px solid #000000;
+}
+
+.formLabel {
+  display: block;
+  font-size: medium;
+  margin: 10px 0px;
+}
+
+.caption {
+  font-size: x-large;
+}
+
 .side {
   background-color: #ffffff;
   padding: 20px;
@@ -15,11 +70,13 @@ body {
 
 .main {
   background-color: #c5c5c5;
-  padding: 20px;
+  padding: 40px;
   float: left;
   margin: 0px;
   width: 60%; /* The width is 60%, by default */
 }
+
+
 
 .bit {
   width: 25px;
@@ -46,8 +103,11 @@ body {
 }
 
 .leftOrient {
-    margin: 20px;
+    margin: 10px;
+    margin-top: 15px;
 }
+
+
 
 .label {
   display: inline-block;
@@ -59,8 +119,8 @@ body {
 }
 
 #bitArray {
-  margin-top: 30px;
-  margin-bottom: 30px;
+  margin-top: 15px;
+  margin-bottom: 15px;
 }
 
 /* Use a media query to add a break point at 800px: */
