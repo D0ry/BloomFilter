@@ -4,21 +4,25 @@
 
 body {
   margin: 0px;
+  font-family: Arial;
 }
 
-.button {
-  background-color: rgb(214, 231, 231);
-  width: 50%;
-  padding: 8px;
-  border: none;
-  font-size: medium;
-  cursor:pointer;
+.side {
+  background-color: #ffffff;
+  padding: 20px;
+  float: left;
+  width: 20%;
 }
 
-.ErrorMssg {
-  padding: 8px;
-  font-size: small;
-  color: darkred;
+.main {
+  background-color: #c5c5c5;
+  padding: 40px;
+  float: left;
+  width: 60%;
+}
+
+.caption {
+  font-size: x-large;
 }
 
 .form {
@@ -36,6 +40,12 @@ body {
   margin-left: -20px;
 }
 
+.formLabel {
+  display: block;
+  font-size: medium;
+  margin: 10px 0px;
+}
+
 .input {
   display: block;
   font-size: small;
@@ -45,38 +55,26 @@ body {
   border-bottom: 1px solid #000000;
 }
 
-.inputForm {
-  orientation: left;
+.button {
+  background-color: rgb(214, 231, 231);
   width: 50%;
-  border-bottom: 1px solid #000000;
-}
-
-.formLabel {
-  display: block;
+  padding: 8px;
+  border: none;
   font-size: medium;
-  margin: 10px 0px;
+  cursor: pointer;
+  margin: 15px 0px;
 }
 
-.caption {
-  font-size: x-large;
+.ErrorMssg {
+  padding: 8px;
+  font-size: small;
+  color: darkred;
 }
 
-.side {
-  background-color: #ffffff;
-  padding: 20px;
-  float: left;
-  width: 20%;
+.bitArray {
+  margin: 15px 0px;
+  text-align: center;
 }
-
-.main {
-  background-color: #c5c5c5;
-  padding: 40px;
-  float: left;
-  margin: 0px;
-  width: 60%; /* The width is 60%, by default */
-}
-
-
 
 .bit {
   width: 25px;
@@ -91,37 +89,18 @@ body {
 }
 
 .bit.active {
-    background-color: yellow;
-  }
-
-.slim {
-    width: 15px;
+  background-color: yellow;
 }
 
-.center {
-  text-align: center;
+.info {
+  padding: 10px 15px;
 }
-
-.leftOrient {
-    margin: 10px;
-    margin-top: 15px;
-}
-
-
 
 .label {
   display: inline-block;
-  width: 20px;
+  width: 65ypx;
 }
 
-.labelBig {
-    width: 60px;
-}
-
-#bitArray {
-  margin-top: 15px;
-  margin-bottom: 15px;
-}
 
 /* Use a media query to add a break point at 800px: */
 @media screen and (max-width: 800px) {
@@ -133,6 +112,14 @@ body {
 @media screen and (max-width: 800px) {
   .side {
     display: none;
+  }
+
+  .input {
+    width: 100%;
+  }
+
+  .button {
+    width: 100%;
   }
 }
 
