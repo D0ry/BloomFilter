@@ -156,9 +156,15 @@
                 parent.replaceChildren();
                 for (let i = 0; i < numberAdditionalHashes; i++) {
                     var element = document.createElement("label");
-                    element.className = "label";
-                    let mathString = "\(a = 3\)";
-                    element.innerHTML = mathString;
+                    element.className = "label" + " " + i;
+                    element.id = e + "label" + i;
+                    var input = x = Object('{H_' + i + ':}');
+                    MathJax.tex2chtmlPromise(input, { display: false }).then(function (node) {
+                        element = document.getElementById(e + "label" + i)
+                        element.appendChild(node);
+                        MathJax.startup.document.clear();
+                        MathJax.startup.document.updateDocument();
+                    });
 
                     parent.appendChild(element);
                     element = document.createElement("label");
@@ -300,7 +306,14 @@
 
         function updateHashInfo(info, hashes, k) {
             for (let i = 2; i < k; i++) {
-                document.getElementById("addHash" + info + (i - 2)).innerHTML = hashes[i];
+                var input = Object('{' + hashes[i] + '}');
+                console.log(hashes[i]);
+                document.getElementById("addHash" + info + (i - 2)).innerHTML = " ";
+                MathJax.tex2chtmlPromise(input, { display: false }).then(function (node) {
+                    document.getElementById("addHash" + info + (i - 2)).appendChild(node);
+                    MathJax.startup.document.clear();
+                    MathJax.startup.document.updateDocument();
+                });
             }
             document.getElementById("MD5HashValue" + info).innerHTML = " ";
             var input = x = Object('{' + hashes[0] + '}');
